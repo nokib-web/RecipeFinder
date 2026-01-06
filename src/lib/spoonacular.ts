@@ -1,4 +1,4 @@
-import { SearchParams, SearchResults, Recipe } from "@/types/recipe";
+import { SearchParams, SearchResults, Recipe, RecipeSummary } from "@/types/recipe";
 
 const API_KEY = (process.env.SPOONACULAR_API_KEY || process.env.NEXT_PUBLIC_SPOONACULAR_API_KEY)?.trim();
 const BASE_URL = "https://api.spoonacular.com/recipes";
@@ -34,11 +34,12 @@ export async function searchRecipes(params: SearchParams): Promise<SearchResults
 
 export async function getRecipeDetails(id: string | number): Promise<Recipe> {
     const response = await fetch(
-        `${BASE_URL}/${id}/information?apiKey=${API_KEY}`,
+        `${BASE_URL}/${id}/information?apiKey=${API_KEY}&includeNutrition=true`,
         {
             next: { revalidate: 3600 },
         }
     );
+
 
     if (!response.ok) {
         throw new Error(`Failed to fetch recipe details: ${response.statusText}`);
@@ -48,16 +49,44 @@ export async function getRecipeDetails(id: string | number): Promise<Recipe> {
 }
 
 export async function getRandomRecipes(number: number = 10): Promise<{ recipes: Recipe[] }> {
-    const response = await fetch(
-        `${BASE_URL}/random?apiKey=${API_KEY}&number=${number}`,
-        {
-            next: { revalidate: 0 }, // Random should probably not be cached or have short cache
+    try {
+        const response = await fetch(
+            `${BASE_URL}/random?apiKey=${API_KEY}&number=${number}`,
+            {
+                next: { revalidate: 3600 }, // Increase cache for random to save quota
+            }
+        );
+
+        if (!response.ok) {
+            console.error(`Spoonacular Quota/Error (Random): ${response.status} ${response.statusText}`);
+            return { recipes: [] };
         }
-    );
 
-    if (!response.ok) {
-        throw new Error(`Failed to fetch random recipes: ${response.statusText}`);
+        return response.json();
+    } catch (error) {
+        console.error("getRandomRecipes failed:", error);
+        return { recipes: [] };
     }
-
-    return response.json();
 }
+
+export async function getSimilarRecipes(id: string | number): Promise<RecipeSummary[]> {
+    try {
+        const response = await fetch(
+            `${BASE_URL}/${id}/similar?apiKey=${API_KEY}&number=4`,
+            {
+                next: { revalidate: 3600 },
+            }
+        );
+
+        if (!response.ok) {
+            console.error(`Spoonacular Quota/Error (Similar): ${response.status} ${response.statusText}`);
+            return [];
+        }
+
+        return response.json();
+    } catch (error) {
+        console.error("getSimilarRecipes failed:", error);
+        return [];
+    }
+}
+

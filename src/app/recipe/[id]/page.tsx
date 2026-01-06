@@ -1,9 +1,18 @@
 import Image from "next/image";
 import { getRecipeDetails } from "@/lib/spoonacular";
-import { Clock, Users, ChevronLeft, CheckCircle2, Flame, Heart } from "lucide-react";
+import { Clock, Users, ChevronLeft, CheckCircle2, Flame, Heart, Printer, Share2 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import FavoriteButton from "@/components/FavoriteButton";
+import RecipeActions from "@/components/RecipeActions";
+import IngredientItem from "@/components/IngredientItem";
+import StepTimerWrapper from "@/components/StepTimerWrapper";
+import AddToPlanner from "@/components/AddToPlanner";
+import InstructionStep from "@/components/InstructionStep";
+import PairingSuggestions from "@/components/PairingSuggestions";
+
+
+
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -21,7 +30,7 @@ export default async function RecipeDetailPage({ params }: PageProps) {
                 <div className="max-w-7xl mx-auto px-4 py-8">
                     <Link
                         href="/search"
-                        className="inline-flex items-center gap-2 text-foreground/60 hover:text-primary transition-colors mb-8 group"
+                        className="inline-flex items-center gap-2 text-foreground/60 hover:text-primary transition-colors mb-8 group back-to-search"
                     >
                         <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                         Back to Search
@@ -66,6 +75,18 @@ export default async function RecipeDetailPage({ params }: PageProps) {
                                 {recipe.title}
                             </h1>
 
+                            <RecipeActions title={recipe.title} />
+
+                            <div className="mb-10">
+                                <AddToPlanner
+                                    recipe={{
+                                        id: recipe.id,
+                                        title: recipe.title,
+                                        image: recipe.image
+                                    }}
+                                />
+                            </div>
+
                             <div className="grid grid-cols-3 gap-6 mb-10">
                                 <div className="bg-card p-4 rounded-3xl border border-border flex flex-col items-center justify-center text-center">
                                     <Clock size={24} className="text-primary mb-2" />
@@ -102,15 +123,41 @@ export default async function RecipeDetailPage({ params }: PageProps) {
                             </h2>
                             <ul className="space-y-4">
                                 {recipe.extendedIngredients?.map((info) => (
-                                    <li key={`${info.id}-${info.original}`} className="flex items-start gap-4 p-4 rounded-2xl bg-card border border-border/50 hover:border-primary/30 transition-colors group">
-                                        <CheckCircle2 size={24} className="text-primary shrink-0 transition-transform group-hover:scale-110" />
-                                        <div>
-                                            <p className="font-medium text-lg capitalize">{info.name}</p>
-                                            <p className="text-foreground/50">{info.original}</p>
-                                        </div>
-                                    </li>
+                                    <IngredientItem
+                                        key={`${info.id}-${info.original}`}
+                                        name={info.name}
+                                        amount={info.original}
+                                        recipeTitle={recipe.title}
+                                    />
                                 ))}
                             </ul>
+
+                            {/* Nutrition Section */}
+                            {recipe.nutrition && (
+                                <div className="mt-12">
+                                    <h2 className="text-3xl font-bold mb-8">Nutrition Facts</h2>
+                                    <div className="bg-card border border-border rounded-3xl p-6">
+                                        <div className="grid grid-cols-2 gap-4">
+                                            {recipe.nutrition.nutrients.filter(n =>
+                                                ['Calories', 'Fat', 'Carbohydrates', 'Protein'].includes(n.name)
+                                            ).map(nutrient => (
+                                                <div key={nutrient.name} className="p-4 rounded-2xl bg-foreground/5 flex flex-col items-center justify-center text-center">
+                                                    <span className="text-sm text-foreground/50 mb-1">{nutrient.name}</span>
+                                                    <span className="font-bold text-lg">{Math.round(nutrient.amount)}{nutrient.unit}</span>
+                                                    <span className="text-[10px] text-primary font-bold uppercase tracking-wider mt-1">
+                                                        {Math.round(nutrient.percentOfDailyNeeds)}% DV
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="mt-6 pt-6 border-t border-border/50">
+                                            <p className="text-sm text-foreground/40 text-center italic">
+                                                * Percent Daily Values are based on a 2,000 calorie diet.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Instructions Column */}
@@ -118,17 +165,12 @@ export default async function RecipeDetailPage({ params }: PageProps) {
                             <h2 className="text-3xl font-bold mb-8">Instructions</h2>
                             {recipe.analyzedInstructions && recipe.analyzedInstructions.length > 0 ? (
                                 <div className="space-y-10">
-                                    {recipe.analyzedInstructions[0].steps.map((step) => (
-                                        <div key={step.number} className="flex gap-6 group">
-                                            <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xl group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
-                                                {step.number}
-                                            </div>
-                                            <div className="pt-2">
-                                                <p className="text-xl leading-relaxed text-foreground/80">
-                                                    {step.step}
-                                                </p>
-                                            </div>
-                                        </div>
+                                    {recipe.analyzedInstructions[0].steps.map((step, index, array) => (
+                                        <InstructionStep
+                                            key={step.number}
+                                            step={step}
+                                            isLast={index === array.length - 1}
+                                        />
                                     ))}
                                 </div>
                             ) : (
@@ -139,8 +181,11 @@ export default async function RecipeDetailPage({ params }: PageProps) {
                             )}
                         </div>
                     </div>
+
+                    <PairingSuggestions recipeId={recipe.id} />
                 </div>
             </main>
+
         );
     } catch (error) {
         console.error("Error loading recipe:", error);

@@ -54,3 +54,68 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+@media print {
+
+  nav,
+  .back-to-search,
+  .action-buttons,
+  .no-print,
+  footer {
+    display: none !important;
+  }
+
+  .planner-grid {
+    display: block !important;
+  }
+
+  .day-section {
+    page-break-inside: avoid;
+    margin-bottom: 2rem !important;
+    border: 1px solid #eee !important;
+    padding: 1.5rem !important;
+    border-radius: 1rem !important;
+  }
+
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .recipe-container {
+    display: block !important;
+    max-width: 100% !important;
+  }
+
+  .image-section {
+    height: 300px !important;
+    border-radius: 0 !important;
+  }
+
+  .grid {
+    display: block !important;
+  }
+
+  .ingredients-column,
+  .instructions-column {
+    page-break-inside: avoid;
+    width: 100% !important;
+    margin-top: 2rem !important;
+  }
+
+  h1 {
+    font-size: 2.5rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .bg-card {
+    border: none !important;
+    background: none !important;
+    padding: 0 !important;
+  }
+}

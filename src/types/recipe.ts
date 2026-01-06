@@ -58,7 +58,48 @@ export interface Recipe {
     vegetarian: boolean;
     dairyFree: boolean;
     glutenFree: boolean;
+    nutrition?: Nutrition;
 }
+
+export interface Nutrition {
+    nutrients: Nutrient[];
+    properties: Property[];
+    flavonoids: Property[];
+    ingredients: IngredientNutrition[];
+    caloricBreakdown: CaloricBreakdown;
+    weightPerServing: {
+        amount: number;
+        unit: string;
+    };
+}
+
+export interface Nutrient {
+    name: string;
+    amount: number;
+    unit: string;
+    percentOfDailyNeeds: number;
+}
+
+export interface Property {
+    name: string;
+    amount: number;
+    unit: string;
+}
+
+export interface IngredientNutrition {
+    id: number;
+    name: string;
+    amount: number;
+    unit: string;
+    nutrients: Nutrient[];
+}
+
+export interface CaloricBreakdown {
+    percentProtein: number;
+    percentFat: number;
+    percentCarbs: number;
+}
+
 
 export interface AnalyzedInstruction {
     name: string;
