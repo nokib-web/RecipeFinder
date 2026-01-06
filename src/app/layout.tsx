@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import OfflineStatus from "@/components/OfflineStatus";
+import Footer from "@/components/Footer";
 
+import OfflineStatus from "@/components/OfflineStatus";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
   description: "Find over 360,000+ delicious recipes with detailed instructions and nutritional information.",
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,14 +30,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
         <OfflineStatus />
         <Navbar />
-        {children}
+        <div className="flex-grow">
+          {children}
+        </div>
+        <Footer />
       </body>
-
     </html>
   );
 }
+
 
