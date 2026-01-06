@@ -1,11 +1,23 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Search, UtensilsCrossed } from 'lucide-react';
 
 export default function Hero() {
+    const [query, setQuery] = useState('');
+    const router = useRouter();
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (query.trim()) {
+            router.push(`/search?query=${encodeURIComponent(query)}`);
+        }
+    };
+
     return (
-        <div className="relative min-height-[70vh] flex flex-col items-center justify-center px-4 overflow-hidden">
+        <div className="relative min-h-[70vh] flex flex-col items-center justify-center px-4 overflow-hidden">
             {/* Decorative background elements */}
             <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[120px]" />
             <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
@@ -19,7 +31,7 @@ export default function Hero() {
                 <div className="inline-flex items-center justify-center p-3 mb-6 rounded-2xl bg-primary/10 text-primary">
                     <UtensilsCrossed size={32} />
                 </div>
-                <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
+                <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent leading-[1.1]">
                     Discover Your Next <br />
                     <span className="text-primary">Culinary Masterpiece</span>
                 </h1>
@@ -28,19 +40,24 @@ export default function Hero() {
                     for any occasion. Your personal kitchen assistant.
                 </p>
 
-                <div className="relative max-w-2xl mx-auto">
+                <form onSubmit={handleSearch} className="relative max-w-2xl mx-auto">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <Search className="text-foreground/40" size={20} />
                     </div>
                     <input
                         type="text"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
                         className="block w-full pl-12 pr-4 py-5 bg-card/50 backdrop-blur-xl border border-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-lg shadow-2xl"
                         placeholder="Search recipes, ingredients, or cuisines..."
                     />
-                    <button className="absolute right-2 top-2 bottom-2 px-6 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-colors">
+                    <button
+                        type="submit"
+                        className="absolute right-2 top-2 bottom-2 px-6 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-colors"
+                    >
                         Search
                     </button>
-                </div>
+                </form>
             </motion.div>
         </div>
     );

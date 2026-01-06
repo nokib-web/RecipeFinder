@@ -1,30 +1,108 @@
+export interface Ingredient {
+    id: number;
+    aisle: string;
+    image: string;
+    consistency: string;
+    name: string;
+    nameClean: string;
+    original: string;
+    originalName: string;
+    amount: number;
+    unit: string;
+    meta: string[];
+    measures: {
+        us: Measure;
+        metric: Measure;
+    };
+}
+
+export interface Measure {
+    amount: number;
+    unitShort: string;
+    unitLong: string;
+}
+
 export interface Recipe {
     id: number;
     title: string;
     image: string;
     imageType: string;
-    readyInMinutes: number;
     servings: number;
+    readyInMinutes: number;
+    license: string;
+    sourceName: string;
+    sourceUrl: string;
+    spoonacularSourceUrl: string;
+    aggregateLikes: number;
+    healthScore: number;
+    creditsText: string;
     summary: string;
     cuisines: string[];
     dishTypes: string[];
     diets: string[];
+    occasions: string[];
     instructions: string;
+    analyzedInstructions: AnalyzedInstruction[];
     extendedIngredients: Ingredient[];
+    weightWatcherSmartPoints: number;
+    gaps: string;
+    lowFodmap: boolean;
+    preparationMinutes: number;
+    cookingMinutes: number;
+    cheap: boolean;
+    sustainable: boolean;
+    veryHealthy: boolean;
+    veryPopular: boolean;
+    whole30: boolean;
+    vegan: boolean;
+    vegetarian: boolean;
+    dairyFree: boolean;
+    glutenFree: boolean;
 }
 
-export interface Ingredient {
-    id: number;
-    aisle: string;
-    image: string;
+export interface AnalyzedInstruction {
     name: string;
-    amount: number;
-    unit: string;
+    steps: Step[];
+}
+
+export interface Step {
+    number: number;
+    step: string;
+    ingredients: Entiy[];
+    equipment: Entiy[];
+    length?: {
+        number: number;
+        unit: string;
+    };
+}
+
+export interface Entiy {
+    id: number;
+    name: string;
+    localizedName: string;
+    image: string;
 }
 
 export interface SearchResults {
-    results: Recipe[];
+    results: RecipeSummary[];
     offset: number;
     number: number;
     totalResults: number;
 }
+
+export interface RecipeSummary {
+    id: number;
+    title: string;
+    image: string;
+    imageType: string;
+}
+
+export type SearchParams = {
+    query?: string;
+    cuisine?: string;
+    diet?: string;
+    intolerances?: string;
+    type?: string;
+    number?: number;
+    offset?: number;
+};
