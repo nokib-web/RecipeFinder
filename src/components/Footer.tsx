@@ -56,7 +56,7 @@ export default function Footer() {
                             </a>
                         </div>
                         <p className="text-xs text-foreground/40">
-                            Made with <Heart size={12} className="inline text-red-500 fill-red-500 mx-1" /> and Next.js
+                            Made by <a href="https://nokib.vercel.app" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">nokib.dev</a>
                         </p>
                     </div>
                 </div>
