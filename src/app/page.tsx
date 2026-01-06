@@ -2,7 +2,7 @@ import Hero from "@/components/Hero";
 import Link from "next/link";
 import { getRandomRecipes } from "@/lib/spoonacular";
 import RecipeCard from "@/components/RecipeCard";
-import { Calendar, ShoppingBag, Heart, Salad, Pizza, Coffee, Cookie, Leaf, Wheat } from "lucide-react";
+import { Calendar, ShoppingBag, Heart, Salad, Pizza, Coffee, Cookie, Leaf, Wheat, UtensilsCrossed, ChefHat, Zap, HeartPulse } from "lucide-react";
 
 export default async function Home() {
   let recipes: any[] = [];
@@ -14,13 +14,17 @@ export default async function Home() {
   }
 
   const categories = [
+    { name: 'Quick & Easy', query: 'maxReadyTime=30', icon: Zap, color: 'bg-yellow-500/10 text-yellow-600' },
+    { name: 'Healthy', query: 'minHealthScore=70', icon: HeartPulse, color: 'bg-emerald-500/10 text-emerald-600' },
     { name: 'Vegetarian', query: 'diet=vegetarian', icon: Salad, color: 'bg-green-500/10 text-green-600' },
     { name: 'Italian', query: 'cuisine=italian', icon: Pizza, color: 'bg-red-500/10 text-red-600' },
-    { name: 'Breakfast', query: 'type=breakfast', icon: Coffee, color: 'bg-orange-500/10 text-orange-600' },
+    { name: 'Japanese', query: 'cuisine=japanese', icon: UtensilsCrossed, color: 'bg-blue-500/10 text-blue-600' },
+    { name: 'Mexican', query: 'cuisine=mexican', icon: ChefHat, color: 'bg-orange-500/10 text-orange-600' },
+    { name: 'Breakfast', query: 'type=breakfast', icon: Coffee, color: 'bg-yellow-500/10 text-yellow-600' },
     { name: 'Desserts', query: 'type=dessert', icon: Cookie, color: 'bg-pink-500/10 text-pink-600' },
-    { name: 'Vegan', query: 'diet=vegan', icon: Leaf, color: 'bg-emerald-500/10 text-emerald-600' },
-    { name: 'Gluten-Free', query: 'diet=gluten+free', icon: Wheat, color: 'bg-amber-500/10 text-amber-600' },
   ];
+
+
 
 
   const features = [
@@ -108,27 +112,27 @@ export default async function Home() {
 
       {/* Categories Section */}
       <div className="w-full max-w-7xl mt-32 mb-24">
-        <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-12 text-center md:text-left">Popular <span className="text-primary">Categories</span></h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-12 text-center md:text-left">Visual <span className="text-primary">Browser</span></h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
           {categories.map((category) => (
             <Link
               key={category.name}
               href={`/search?${category.query}`}
-              className="group relative h-40 rounded-[2.5rem] overflow-hidden cursor-pointer bg-card border border-border transition-all hover:shadow-xl hover:-translate-y-1 p-8 flex items-center justify-between"
+              className="group relative h-48 rounded-[2.5rem] overflow-hidden cursor-pointer bg-card border border-border transition-all hover:shadow-2xl hover:-translate-y-2 p-8 flex flex-col items-center justify-center text-center gap-4"
             >
-              <div className="z-20">
-                <p className="font-bold text-2xl mb-1">{category.name}</p>
-                <span className="text-xs font-bold uppercase tracking-widest text-foreground/40 group-hover:text-primary transition-colors">Explore →</span>
+              <div className={`p-6 rounded-[2rem] ${category.color} z-20 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-sm`}>
+                <category.icon size={48} />
               </div>
-              <div className={`p-5 rounded-3xl ${category.color} z-20 group-hover:rotate-12 transition-transform shadow-sm`}>
-                <category.icon size={36} />
+              <div className="z-20">
+                <p className="font-bold text-xl mb-1">{category.name}</p>
               </div>
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             </Link>
           ))}
         </div>
       </div>
+
 
       {/* CTA Section */}
       <div className="w-full max-w-7xl mb-12">

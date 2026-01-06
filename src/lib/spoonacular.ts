@@ -90,3 +90,25 @@ export async function getSimilarRecipes(id: string | number): Promise<RecipeSumm
     }
 }
 
+export async function getRecipesByIngredients(ingredients: string): Promise<RecipeSummary[]> {
+    try {
+        const response = await fetch(
+            `${BASE_URL}/findByIngredients?apiKey=${API_KEY}&ingredients=${encodeURIComponent(ingredients)}&number=12`,
+            {
+                next: { revalidate: 3600 },
+            }
+        );
+
+        if (!response.ok) {
+            console.error(`Spoonacular Quota/Error (ByIngredients): ${response.status} ${response.statusText}`);
+            return [];
+        }
+
+        return response.json();
+    } catch (error) {
+        console.error("getRecipesByIngredients failed:", error);
+        return [];
+    }
+}
+
+

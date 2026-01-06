@@ -1,12 +1,12 @@
 'use client';
 
 import { useShoppingList } from "@/lib/useShoppingList";
-import { Trash2, CheckCircle2, Circle, ShoppingBag, ArrowLeft, Plus } from "lucide-react";
+import { Trash2, CheckCircle2, Circle, ShoppingBag, ArrowLeft, Plus, CheckSquare, Trash } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function ShoppingListPage() {
-    const { items, toggleItem, removeItem, clearCompleted } = useShoppingList();
+    const { items, toggleItem, removeItem, clearCompleted, checkAll, clearAll } = useShoppingList();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -46,16 +46,38 @@ export default function ShoppingListPage() {
                             </p>
                         </div>
 
-                        {completedCount > 0 && (
-                            <button
-                                onClick={clearCompleted}
-                                className="px-6 py-3 text-sm font-bold bg-foreground/5 hover:bg-red-500/10 hover:text-red-500 rounded-2xl transition-all"
-                            >
-                                Clear Completed
-                            </button>
-                        )}
+                        <div className="flex flex-wrap gap-2">
+                            {items.length > 0 && completedCount < items.length && (
+                                <button
+                                    onClick={checkAll}
+                                    className="flex items-center gap-2 px-6 py-3 text-sm font-bold bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground rounded-2xl transition-all"
+                                >
+                                    <CheckSquare size={18} />
+                                    Check All
+                                </button>
+                            )}
+                            {completedCount > 0 && (
+                                <button
+                                    onClick={clearCompleted}
+                                    className="flex items-center gap-2 px-6 py-3 text-sm font-bold bg-red-500/5 text-red-500 hover:bg-red-500 hover:text-white rounded-2xl transition-all"
+                                >
+                                    <Trash2 size={18} />
+                                    Clear Completed
+                                </button>
+                            )}
+                            {items.length > 0 && (
+                                <button
+                                    onClick={clearAll}
+                                    className="flex items-center gap-2 px-6 py-3 text-sm font-bold bg-foreground/5 hover:bg-foreground/10 rounded-2xl transition-all"
+                                >
+                                    <Trash size={18} />
+                                    Clear All
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </header>
+
 
                 {items.length > 0 ? (
                     <div className="bg-card border border-border rounded-[2.5rem] overflow-hidden shadow-xl">

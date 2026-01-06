@@ -1,14 +1,34 @@
 'use client';
 
 import Link from 'next/link';
-import { UtensilsCrossed, Search, Heart, ShoppingBag, Calendar, Trophy } from 'lucide-react';
+import { UtensilsCrossed, Search, Heart, ShoppingBag, Calendar, Trophy, ChefHat } from 'lucide-react';
+
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-
-
+import { useEffect, useState } from 'react';
 
 export default function Navbar() {
     const pathname = usePathname();
+    const [isCookingMode, setIsCookingMode] = useState(false);
+
+    useEffect(() => {
+        const saved = localStorage.getItem('cooking-mode');
+        if (saved === 'true') {
+            setIsCookingMode(true);
+            document.documentElement.classList.add('cooking-mode');
+        }
+    }, []);
+
+    const toggleCookingMode = () => {
+        const newState = !isCookingMode;
+        setIsCookingMode(newState);
+        localStorage.setItem('cooking-mode', String(newState));
+        if (newState) {
+            document.documentElement.classList.add('cooking-mode');
+        } else {
+            document.documentElement.classList.remove('cooking-mode');
+        }
+    };
 
     return (
         <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
@@ -20,7 +40,7 @@ export default function Navbar() {
                     <span className="text-xl font-bold tracking-tight">Recipe<span className="text-primary">Finder</span></span>
                 </Link>
 
-                <div className="hidden md:flex items-center gap-8">
+                <div className="hidden lg:flex items-center gap-6">
                     <Link
                         href="/"
                         className={cn(
@@ -75,29 +95,43 @@ export default function Navbar() {
                     >
                         Achievements
                     </Link>
-
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 sm:gap-4">
+                    <button
+                        onClick={toggleCookingMode}
+                        className={cn(
+                            "p-2.5 rounded-full transition-all duration-500",
+                            isCookingMode
+                                ? "bg-[var(--primary)] text-[var(--primary-foreground)] shadow-[0_0_15px_rgba(212,175,55,0.4)]"
+                                : "hover:bg-foreground/5 text-foreground/60"
+                        )}
+                        title="Toggle Cooking Mode"
+                    >
+                        <ChefHat size={20} className={cn(isCookingMode && "animate-pulse")} />
+                    </button>
+
                     <Link
                         href="/search"
                         className="p-2.5 rounded-full hover:bg-foreground/5 text-foreground/60 transition-colors"
                     >
                         <Search size={20} />
                     </Link>
+
                     <Link
                         href="/planner"
                         className={cn(
-                            "p-2.5 rounded-full transition-colors",
+                            "p-2.5 rounded-full transition-colors hidden sm:flex",
                             pathname === "/planner" ? "bg-primary/10 text-primary" : "hover:bg-foreground/5 text-foreground/60"
                         )}
                     >
                         <Calendar size={20} fill={pathname === "/planner" ? "currentColor" : "none"} />
                     </Link>
+
                     <Link
                         href="/shopping-list"
                         className={cn(
-                            "p-2.5 rounded-full transition-colors",
+                            "p-2.5 rounded-full transition-colors hidden sm:flex",
                             pathname === "/shopping-list" ? "bg-primary/10 text-primary" : "hover:bg-foreground/5 text-foreground/60"
                         )}
                     >
@@ -117,13 +151,12 @@ export default function Navbar() {
                     <Link
                         href="/achievements"
                         className={cn(
-                            "p-2.5 rounded-full transition-colors",
+                            "p-2.5 rounded-full transition-colors hidden sm:flex",
                             pathname === "/achievements" ? "bg-primary/10 text-primary" : "hover:bg-foreground/5 text-foreground/60"
                         )}
                     >
                         <Trophy size={20} fill={pathname === "/achievements" ? "currentColor" : "none"} />
                     </Link>
-
 
                     <button className="hidden sm:block ml-2 px-6 py-2.5 bg-foreground text-background rounded-full font-semibold hover:bg-foreground/90 transition-colors">
                         Sign In
@@ -131,5 +164,6 @@ export default function Navbar() {
                 </div>
             </div>
         </nav>
+
     );
 }

@@ -51,5 +51,14 @@ export function useShoppingList() {
         save(items.filter(i => !i.completed));
     };
 
-    return { items, addItem, addMultiple, removeItem, toggleItem, clearCompleted };
+    const checkAll = () => {
+        save(items.map(i => ({ ...i, completed: true })));
+    };
+
+    const clearAll = () => {
+        save([]);
+    };
+
+    return { items, addItem, addMultiple, removeItem, toggleItem, clearCompleted, checkAll, clearAll };
 }
+
