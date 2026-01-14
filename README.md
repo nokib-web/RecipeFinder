@@ -2,7 +2,7 @@
 
 **RecipeFinder** is a premium, feature-rich web application designed for home cooks, meal planners, and food enthusiasts. Powered by the **Spoonacular API**, it offers access to over 360,000+ recipes with advanced filtering, meal planning, and interactive cooking tools.
 
-![RecipeFinder Hero Section](https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=1600)
+![RecipeFinder Hero Section](https://i.ibb.co.com/DHr3MFB2/abdelrahman-sarayreh-RIel-TXL5w-Vk-unsplash.jpg)
 
 ## ✨ Features
 
